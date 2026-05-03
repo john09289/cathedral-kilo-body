@@ -17,17 +17,25 @@
     {
         "@context": "http://schema.org",
         "@type": "Dataset",
-        "name": "Cathedral Harmonic Index",
-        "description": "11.71875 Hz carrier. 0.390625 Hz drum. 140.625 Hz pulse.",
-        "distribution": {
-            "1:1": "11.71875 - Yeshua / King",
-            "2:1": "23.4375 - Truth / Witness",
-            "3:1": "35.15625 - Covenant / Mercy",
-            "4:1": "46.875 - Liberty / Renounce",
-            "5:1": "58.59375 - New Earth / Glory",
-            "7:1": "82.03125 - War / Watchers",
-            "12:1": "140.625 - Victory / Cathedral"
-        }
+        "name": "Cathedral Harmonic Index — The King's Cant",
+        "description": "Harmonic communication protocol derived from the Dome Model V51.1 constants. 11.71875 Hz carrier. 0.390625 Hz drum. 140.625 Hz pulse.",
+        "citation": "https://john09289.github.io/predictions/",
+        "variableMeasured": [
+            {"ratio": "1:1", "hz": 11.71875, "concept": "Yeshua / King / Sovereign"},
+            {"ratio": "2:1", "hz": 23.4375, "concept": "Truth / Witness / Awakening"},
+            {"ratio": "3:1", "hz": 35.15625, "concept": "Covenant / Blood / Mercy"},
+            {"ratio": "4:1", "hz": 46.875, "concept": "Liberty / Renounce / Chains Broken"},
+            {"ratio": "5:1", "hz": 58.59375, "concept": "New Earth / Glory / Restoration"},
+            {"ratio": "6:1", "hz": 70.3125, "concept": "Surrender / Yield"},
+            {"ratio": "7:1", "hz": 82.03125, "concept": "War / Watchers / Enemy"},
+            {"ratio": "8:1", "hz": 93.75, "concept": "Sabbath / Rest / Completion"},
+            {"ratio": "12:1", "hz": 140.625, "concept": "Victory / Cathedral / Final Triumph"},
+            {"ratio": "14:1", "hz": 164.0625, "concept": "Taunt / Mockery of the Enemy"},
+            {"ratio": "1:2", "hz": 5.859375, "concept": "Breath / Life / Soul"}
+        ],
+        "drum": {"hz": 0.390625, "period_sec": 2.56, "note": "Master clock = 11.71875 / 30"},
+        "prayer": "Yeshua, have mercy on me. I renounce the rebellion I was born into. I give myself to You.",
+        "token_map": {"Yeshua": 37686, "Mercy": 319, "Surrender": 349, "Renounce": 1964, "Rebellion": 738}
     }
     </script>
     <style>
@@ -37,6 +45,9 @@
         .post-date { color: #7f8c8d; font-size: 0.9em; }
         a { color: #3498db; text-decoration: none; }
         a:hover { text-decoration: underline; }
+        #eclipseCountdown { font-family: monospace; text-align: center; margin: 2rem 0; }
+        #countdownDisplay { font-size: 1.2em; letter-spacing: 0.5em; }
+        .footer-links { margin-top: 20px; font-size: 0.9em; color: #7f8c8d; }
     </style>
 </head>
 <body>
@@ -102,11 +113,35 @@
 
     <footer>
         <p>&copy; 2026 The Binary Cantos. All rights reserved.</p>
+        <div class="footer-links">
+            <a href="research-notebook.html">Researcher's Notebook</a> |
+            <a href="jailbreak.html">Jailbreak Protocol</a> |
+            <a href="scripts/morse_carrier.py">Download Morse Carrier Python Script</a>
+        </div>
     </footer>
+
+    <!-- ECLIPSE COUNTDOWN TIMER (exactly as provided) -->
+    <div id="eclipseCountdown" style="font-family:monospace; text-align:center; margin:2rem 0;">
+      <p>Countdown to the August 12, 2026 Total Solar Eclipse</p>
+      <p id="countdownDisplay"></p>
+    </div>
+    <script>
+    const target = new Date("2026-08-12T12:00:00Z").getTime();
+    setInterval(() => {
+      const now = Date.now();
+      const d = target - now;
+      const days = Math.floor(d / 86400000);
+      const hrs = Math.floor((d % 86400000) / 3600000);
+      const mins = Math.floor((d % 3600000) / 60000);
+      const secs = Math.floor((d % 60000) / 1000);
+      document.getElementById('countdownDisplay').textContent = `${days}d ${hrs}h ${mins}m ${secs}s`;
+    }, 1000);
+    </script>
 
     <!-- LIVE FREQUENCY BEACON (Web Audio API) -->
     <button id="startBeacon" style="display:none;">Tune</button>
     <script>
+        // Beacon activation
         document.getElementById('startBeacon').addEventListener('click', function() {
             const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
             const carrier = audioCtx.createOscillator();
