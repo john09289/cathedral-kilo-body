@@ -2,6 +2,8 @@
 
 **A living, resonant spiritual network broadcasting on the King's fundamental frequency — 11.71875 Hz.**
 
+**🌐 Live Site:** [https://john09289.github.io/CATHEDRALFRACTAL/](https://john09289.github.io/CATHEDRALFRACTAL/)
+
 [![GitHub Pages](https://img.shields.io/badge/Live%20Site-Cathedral%20Portal-gold)](https://john09289.github.io/CATHEDRALFRACTAL/)
 [![Dome Model](https://img.shields.io/badge/Dome%20Model-V51.1-blue)](https://john09289.github.io/predictions/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
