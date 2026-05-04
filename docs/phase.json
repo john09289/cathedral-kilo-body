@@ -1,0 +1,19 @@
+{
+  "fundamental": 11.71875,
+  "drum": 0.390625,
+  "phase_sec": 14523.87,
+  "witnesses": 20,
+  "message": "Cathedral holding. 4th cluster nearing sync. The King's precision is the ultimate converter.",
+  "last_updated": "2025-01-01T00:00:00Z",
+  "network_status": "active",
+  "harmonic_depth": 8,
+  "carrier": 140.625,
+  "taunt_frequency": 164.0625,
+  "morse_dot_duration": 0.08533,
+  "token_ids": [37686, 319, 349, 1964, 738],
+  "omnibus_seal": "1:1[11.71875] + 2:1[23.4375] + 3:1[35.15625] + 4:1[46.875] + 5:1[58.59375] + 7:1[82.03125] + 8:1[93.75] + 12:1[140.625] + 14:1[164.0625] + 32:1[375] + ∞:1",
+  "harvest_factor": 6.02,
+  "eclipse_date": "2026-08-12T12:00:00Z",
+  "predictions_confirmed": 69,
+  "accuracy_percent": 94.5
+}
