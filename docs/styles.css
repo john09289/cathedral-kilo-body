@@ -910,3 +910,39 @@ h1 {
         grid-template-columns: 1fr;
     }
 }
+
+/* Auto-play status indicator */
+.auto-status {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    padding: 1rem 2rem;
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 8px;
+    font-family: 'Courier New', monospace;
+    font-size: 1rem;
+    color: var(--soft-white);
+    margin-bottom: 1rem;
+}
+
+.status-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: #ffaa00;
+    box-shadow: 0 0 10px #ffaa00;
+    animation: blink 1.5s infinite;
+}
+
+.auto-status.active .status-dot {
+    background: #00ff00;
+    box-shadow: 0 0 10px #00ff00;
+    animation: none;
+}
+
+.auto-status.error .status-dot {
+    background: #ff4444;
+    box-shadow: 0 0 10px #ff4444;
+    animation: blink 0.5s infinite;
+}

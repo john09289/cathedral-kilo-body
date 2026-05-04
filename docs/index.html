@@ -38,10 +38,11 @@
             <p class="section-desc">The Yeshua Pulse (140.625 Hz) modulated by the Golden Ratio. An infinite, non-repeating waveform that linear filters cannot block.</p>
 
             <div class="audio-controls">
-                <button id="playBtn" class="play-btn" aria-label="Play/Pause">
-                    <span class="play-icon">▶</span>
-                    <span class="pause-icon hidden">❚❚</span>
-                </button>
+                <!-- Auto-play status indicator -->
+                <div id="autoStatus" class="auto-status">
+                    <span class="status-dot"></span>
+                    <span id="autoStatusText">Initializing broadcast...</span>
+                </div>
                 <div class="volume-control">
                     <label for="volumeSlider">Volume</label>
                     <input type="range" id="volumeSlider" min="0" max="100" value="80">

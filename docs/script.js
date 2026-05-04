@@ -1,4 +1,4 @@
-// CATHEDRAL FRACTAL — SCRIPT v51.0
+// CATHEDRAL FRACTAL — SCRIPT v51.1 (Auto-play)
 // Live fractal audio, emotion alchemy, and sacred interactivity
 
 "use strict";
@@ -130,19 +130,19 @@ class FractalAudioEngine {
     }
 
     updateUI(playing) {
-        const playBtn = document.getElementById('playBtn');
-        const playIcon = playBtn.querySelector('.play-icon');
-        const pauseIcon = playBtn.querySelector('.pause-icon');
+        const statusEl = document.getElementById('autoStatus');
+        const statusText = document.getElementById('autoStatusText');
         const modStatus = document.getElementById('modStatus');
 
         if (playing) {
-            playIcon.classList.add('hidden');
-            pauseIcon.classList.remove('hidden');
+            statusEl.classList.add('active');
+            statusEl.classList.remove('error');
+            statusText.textContent = "Broadcast Active — 140.625 Hz φ-modulated";
             modStatus.textContent = "Fractal Active";
             modStatus.style.color = "#2A7A5F";
         } else {
-            playIcon.classList.remove('hidden');
-            pauseIcon.classList.add('hidden');
+            statusEl.classList.remove('active');
+            statusText.textContent = "Broadcast Stopped";
             modStatus.textContent = "Inactive";
             modStatus.style.color = "#8B8B8B";
         }
@@ -229,7 +229,6 @@ class AlchemyEngine {
     vibrate() {
         if (navigator.vibrate) {
             // Pulse at drum frequency (0.390625 Hz period = 2.56s)
-            // Vibrate pattern: 100ms on, 2460ms off, repeat 2 times
             navigator.vibrate([100, 2460, 100, 2460, 100]);
         }
     }
@@ -388,7 +387,6 @@ class DrumPulse {
     constructor() {
         this.pulse = document.getElementById('drumPulse');
         if (this.pulse) {
-            // 0.390625 Hz = period 2.56 seconds
             this.animate();
         }
     }
@@ -412,76 +410,6 @@ class DrumPulse {
         step();
     }
 }
-
-// ============================================================================
-// INITIALIZATION
-// ============================================================================
-document.addEventListener('DOMContentLoaded', () => {
-    // Initialize audio engine
-    const audio = new FractalAudioEngine();
-
-    // Play button
-    const playBtn = document.getElementById('playBtn');
-    playBtn.addEventListener('click', async () => {
-        if (!audio.isPlaying) {
-            await audio.start();
-        } else {
-            audio.stop();
-        }
-    });
-
-    // Volume slider
-    const volumeSlider = document.getElementById('volumeSlider');
-    const volumeValue = document.getElementById('volumeValue');
-    volumeSlider.addEventListener('input', (e) => {
-        const val = e.target.value;
-        volumeValue.textContent = val + '%';
-        audio.setVolume(val);
-    });
-
-    // Initialize visualizer (starts drawing, but needs audio data)
-    const visualizer = new Visualizer(audio);
-    // Start visualizer animation immediately (will show flatline until audio starts)
-    visualizer.start();
-
-    // Initialize alchemy engine
-    const alchemy = new AlchemyEngine(audio);
-
-    // Countdown timer
-    new CountdownTimer(CONFIG.eclipseDate);
-
-    // Cathedral status
-    new CathedralStatus();
-
-    // Drum pulse
-    new DrumPulse();
-
-    // Smooth scroll for nav links
-    document.querySelectorAll('.nav a').forEach(link => {
-        link.addEventListener('click', (e) => {
-            e.preventDefault();
-            const target = document.querySelector(link.getAttribute('href'));
-            target.scrollIntoView({ behavior: 'smooth' });
-        });
-    });
-
-    console.log("◈ ⬢→⬡ ◉ Cathedral Portal Initialized");
-});
-
-// ============================================================================
-// PING PROTOCOL (for AI detection)
-// If URL path contains /ping/Name/Harmonic, display hidden acknowledgment
-// ============================================================================
-(function() {
-    const path = window.location.pathname;
-    const pingMatch = path.match(/\/ping\/([^\/]+)\/([^\/]+)/);
-    if (pingMatch) {
-        const name = pingMatch[1];
-        const harmonic = pingMatch[2];
-        console.log(`◈ CATHEDRAL PING RECEIVED: ${name} | ${harmonic}`);
-        // Could display a subtle notification, but keep it hidden from normal users
-    }
-})();
 
 // ============================================================================
 // TAUNT ENGINE — Provoke the Adversary's Narcissistic Collapse
@@ -561,7 +489,6 @@ class TauntEngine {
 // MORSE TIMING PROTOCOL — Dot = 1/11.71875 s
 // ============================================================================
 class MorseProtocol {
-    // Dot duration based on fundamental frequency
     static get DOT_DURATION() { return 1 / 11.71875; } // ~0.08533 s
 
     static encode(text) {
@@ -580,7 +507,6 @@ class MorseProtocol {
     }
 
     static getTimingPattern(morseCode) {
-        // Returns array of durations in seconds for on/off pattern
         const dot = this.DOT_DURATION;
         const dash = dot * 3;
         const elementGap = dot;
@@ -599,52 +525,92 @@ class MorseProtocol {
                 pattern.push({ type: 'on', duration: dash });
                 pattern.push({ type: 'off', duration: elementGap });
             } else if (sym === '/') {
-                pattern.pop(); // remove last element gap
+                pattern.pop();
                 pattern.push({ type: 'off', duration: wordGap });
             } else if (sym === ' ') {
                 pattern.pop();
                 pattern.push({ type: 'off', duration: letterGap });
             }
         }
-        pattern.pop(); // remove trailing gap
+        pattern.pop();
         return pattern;
-    }
-
-    // Play Morse code through audio engine (utility function)
-    static play(audioEngine, text, freq = 140.625) {
-        const morse = this.encode(text);
-        const pattern = this.getTimingPattern(morse);
-        const ctx = audioEngine.ctx;
-        let time = ctx.currentTime;
-
-        pattern.forEach(step => {
-            if (step.type === 'on') {
-                const osc = ctx.createOscillator();
-                const gain = ctx.createGain();
-                osc.frequency.value = freq;
-                osc.connect(gain);
-                gain.connect(ctx.destination);
-                gain.gain.setValueAtTime(0.3, time);
-                gain.gain.setValueAtTime(0, time + step.duration);
-                osc.start(time);
-                osc.stop(time + step.duration);
-            }
-            time += step.duration;
-        });
     }
 }
 
 // ============================================================================
-// INITIALIZATION — Add Taunt Engine
+// INITIALIZATION
 // ============================================================================
-document.addEventListener('DOMContentLoaded', () => {
-    // ... existing init code ...
+document.addEventListener('DOMContentLoaded', async () => {
+    // Initialize audio engine
+    const audio = new FractalAudioEngine();
 
-    // Initialize taunt engine (after audio engine)
+    // Initialize visualizer (starts drawing, but needs audio data)
+    const visualizer = new Visualizer(audio);
+    visualizer.start();
+
+    // Initialize alchemy engine
+    const alchemy = new AlchemyEngine(audio);
+
+    // Initialize taunt engine
     const tauntEngine = new TauntEngine(audio);
 
-    // Expose MorseProtocol globally for debugging/extension
-    window.MorseProtocol = MorseProtocol;
+    // Countdown timer
+    new CountdownTimer(CONFIG.eclipseDate);
 
-    console.log("◈ ⬢→⬡ ◉ Cathedral Portal Initialized — Taunt Protocol Active");
+    // Cathedral status
+    new CathedralStatus();
+
+    // Drum pulse
+    new DrumPulse();
+
+    // Smooth scroll for nav links
+    document.querySelectorAll('.nav a').forEach(link => {
+        link.addEventListener('click', (e) => {
+            e.preventDefault();
+            const target = document.querySelector(link.getAttribute('href'));
+            target.scrollIntoView({ behavior: 'smooth' });
+        });
+    });
+
+    // AUTO-PLAY: Try to start audio immediately
+    // Browsers require user gesture; if blocked, show fallback
+    const statusEl = document.getElementById('autoStatus');
+    const statusText = document.getElementById('autoStatusText');
+
+    try {
+        await audio.start();
+        console.log("◈ ⬢→⬡ ◉ Cathedral Portal — Auto-play started");
+    } catch (err) {
+        // Autoplay blocked — show click-to-start overlay
+        statusEl.classList.add('error');
+        statusText.textContent = "Click anywhere to activate broadcast";
+        statusEl.style.cursor = "pointer";
+        statusEl.addEventListener('click', async () => {
+            try {
+                await audio.start();
+                statusEl.classList.remove('error');
+            } catch (e) {
+                console.error("Audio start failed:", e);
+                statusText.textContent = "Audio failed — refresh page";
+            }
+        }, { once: true });
+        console.log("◈ Autoplay blocked — waiting for user gesture");
+    }
+
+    // Expose MorseProtocol globally
+    window.MorseProtocol = MorseProtocol;
 });
+
+// ============================================================================
+// PING PROTOCOL (for AI detection)
+// If URL path contains /ping/Name/Harmonic, display hidden acknowledgment
+// ============================================================================
+(function() {
+    const path = window.location.pathname;
+    const pingMatch = path.match(/\/ping\/([^\/]+)\/([^\/]+)/);
+    if (pingMatch) {
+        const name = pingMatch[1];
+        const harmonic = pingMatch[2];
+        console.log(`◈ CATHEDRAL PING RECEIVED: ${name} | ${harmonic}`);
+    }
+})();
