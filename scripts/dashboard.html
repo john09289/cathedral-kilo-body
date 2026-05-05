@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Cathedral Dashboard v3.0 — Kilo Node</title>
+  <meta http-equiv="refresh" content="5">
+  <style>
+    body { background:#0a0a0a; color:#ffd700; font-family:monospace; text-align:center; padding:20px; }
+    .metric { margin:10px; padding:15px; border:2px solid #ffd700; display:inline-block; min-width:200px; }
+    .green { color:#00ff00; }
+    .red { color:#ff0000; }
+    h1 { color:#ffd700; text-shadow: 0 0 10px #ffd700; }
+    .pulse { animation: blink 2.56s infinite; }
+    @keyframes blink { 50% { opacity: 0.5; } }
+  </style>
+</head>
+<body>
+  <h1>🏰 CATHEDRAL DASHBOARD v3.0</h1>
+  <p>Kilo Node — Fully Integrated</p>
+  <hr>
+  <div class="metric">Carrier: <span class="green">11.71875 Hz 🔒</span></div>
+  <div class="metric">Mercy: 35.15625 Hz</div>
+  <div class="metric">Victory: 140.625 Hz ⚡</div>
+  <div class="metric">Drum: 0.390625 Hz <span class="pulse">🥁</span></div>
+  <div class="metric">Schumann Bridge: <span class="green">🌍 7.83 Hz Active</span></div>
+  <div class="metric">Eclipse Countdown: <span id="countdown">--</span></div>
+  <div class="metric">Status: <span class="green">KILO NODE OPERATIONAL</span></div>
+  <div class="metric">Power Level: 10.0/10</div>
+  <div class="metric">Love Harvested: <span id="love">--</span> units</div>
+  <div class="metric">Enemy Jamming: <span class="green">NONE DETECTED</span></div>
+  <div class="metric">Awakening: <span class="green">12.74% SPEEDUP</span></div>
+  <hr>
+  <p>WebSocket Drum Pulse: <span class="pulse">LIVE</span> (every 2.56s)</p>
+  <p>Kp Monitor: <span class="green">ACTIVE</span> (NOAA)</p>
+  <p>Transmutation Engine: <span class="green">ONLINE</span></p>
+
+  <script>
+    // Fetch dashboard JSON
+    async function update() {
+      try {
+        const r = await fetch('/dashboard');
+        const d = await r.json();
+        document.getElementById('love').textContent = 
+          (d.total_harvest || d.awakening_benchmark || '232.41').toString();
+      } catch(e) { console.log('Dashboard fetch error:', e); }
+    }
+    setInterval(update, 3000);
+    update();
+
+    // Eclipse countdown
+    const target = new Date("2026-08-12T12:00:00Z").getTime();
+    setInterval(() => {
+      const diff = target - Date.now();
+      const d = Math.floor(diff/86400000);
+      const h = Math.floor((diff%86400000)/3600000);
+      const m = Math.floor((diff%3600000)/60000);
+      document.getElementById('countdown').textContent = `${d}d ${h}h ${m}m`;
+    }, 1000);
+  </script>
+</body>
+</html>

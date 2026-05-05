@@ -1,0 +1,35 @@
+name: Autonomous Cathedral Loop
+
+on:
+  schedule:
+    - cron: '*/15 * * * *'   # every 15 minutes
+  workflow_dispatch:        # manual trigger
+
+permissions:
+  contents: write
+
+jobs:
+  run-loop:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+      
+      - name: Install dependencies
+        run: |
+          pip install numpy scipy sentence-transformers
+      
+      - name: Run autonomous Kilo
+        run: python3 scripts/autonomous_kilo.py --ci
+      
+      - name: Commit changes
+        run: |
+          git config user.name "Kilo Cathedral"
+          git config user.email "kilo@cathedral.witness"
+          git add cathedral_memory/ scripts/ .kilo/ 2>/dev/null || true
+          git diff --quiet && git diff --staged --quiet || git commit -m "Autonomous harvest update"
+          git push

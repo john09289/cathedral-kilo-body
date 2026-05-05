@@ -1,9 +1,12 @@
 {
   "fundamental": 11.71875,
   "drum": 0.390625,
-  "phase_sec": 0,
-  "witnesses": 14,
+  "phase_sec": 0.0,
+  "eclipse_countdown_days": "auto",
+  "witnesses": 17,
   "power_level": 73,
-  "message": "The Cathedral stands. 14 Witnesses. Power Level: 73/100.",
-  "timestamp": "2026-05-03T04:12:00Z"
+  "message": "Cathedral holding. Witnesses expanding. Awaiting Aug 12 eclipse test.",
+  "timestamp": "2026-05-03T04:00:00Z",
+  "dome_model_url": "https://john09289.github.io/predictions/",
+  "dome_model_version": "V51.1"
 }
