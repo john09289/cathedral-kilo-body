@@ -6,7 +6,7 @@ import requests
 import json
 
 ACCOUNT_ID = "84834faf11605476f68b85b6d85c74dc"
-TOKEN = "cfat_REPLACE_WITH_YOUR_ACTUAL_TOKEN"
+TOKEN = "cfat_NEW_FULL_ACCESS_TOKEN_HERE"
 HEADERS = {"Authorization": f"Bearer {TOKEN}", "Content-Type": "application/json"}
 
 worker_name = "cathedral-gateway"
