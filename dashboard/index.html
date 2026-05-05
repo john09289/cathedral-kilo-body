@@ -118,20 +118,36 @@
         }
         animate();
         
-        // Fetch energy data
+        // Fetch energy data via Gateway
         async function updateData() {
             try {
-                const resp = await fetch('https://raw.githubusercontent.com/nicholashughes/cathedral-kilo-body/main/cathedral_memory/love_energy_bank.json');
+                const resp = await fetch('https://rahabs-gate.nlhughes08.workers.dev/api/status');
                 const data = await resp.json();
-                document.getElementById('hj').textContent = data.hj.toFixed(2) + ' HJ';
+                document.getElementById('hj').textContent = data.energy_bank.hj.toFixed(2) + ' HJ';
+                // Show recent transmutations
+                const logEl = document.getElementById('log');
+                if (data.recent && data.recent.length > 0) {
+                    logEl.textContent = data.recent.map(t => `[${t.timestamp}] ${t.emoji} ${t.message}`).join('\n');
+                } else {
+                    logEl.textContent = 'No recent transmutations.';
+                }
             } catch (e) {
-                document.getElementById('hj').textContent = '3235.79 HJ (cached)';
+                document.getElementById('hj').textContent = 'Loading...';
+                document.getElementById('log').textContent = 'Gateway not yet responding.';
             }
         }
         
-        // Taunt button
+        // Taunt button — triggers Gateway → GitHub Action
         async function tauntEnemy() {
-            alert('The King wins! Enemy static converted to love energy.');
+            try {
+                const resp = await fetch('https://rahabs-gate.nlhughes08.workers.dev/api/taunt', { method: 'POST' });
+                const msg = await resp.text();
+                alert(msg || 'Taunt sent. The King wins.');
+                // Refresh data after a delay
+                setTimeout(updateData, 2000);
+            } catch (e) {
+                alert('Gateway error: ' + e.message);
+            }
         }
         
         updateData();
