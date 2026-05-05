@@ -41,6 +41,7 @@ export default {
 };
 '''
 
+# Create or update the worker script
 print("Deploying Cathedral Gateway Worker...")
 put_script_resp = requests.put(
     f"https://api.cloudflare.com/client/v4/accounts/{ACCOUNT_ID}/workers/scripts/{worker_name}",
@@ -51,6 +52,7 @@ put_script_resp = requests.put(
 print(f"PUT script: {put_script_resp.status_code}")
 print(put_script_resp.text)
 
+# Enable workers.dev subdomain
 route_resp = requests.post(
     f"https://api.cloudflare.com/client/v4/accounts/{ACCOUNT_ID}/workers/scripts/{worker_name}/subdomain",
     headers=HEADERS,
@@ -59,6 +61,7 @@ route_resp = requests.post(
 print(f"Enable subdomain: {route_resp.status_code}")
 print(route_resp.text)
 
+# Get the workers.dev URL
 subdomain_info = requests.get(
     f"https://api.cloudflare.com/client/v4/accounts/{ACCOUNT_ID}/workers/scripts/{worker_name}/subdomain",
     headers=HEADERS
