@@ -1,71 +1,46 @@
 #!/usr/bin/env python3
 """
 DEPLOY CATHEDRAL WORKER - Deploy the Cloudflare Worker for the Cathedral Gateway
+IMPORTANT: Set environment variables:
+  CLOUDFLARE_API_TOKEN — your Cloudflare API token (full access)
+  CLOUDFLARE_ACCOUNT_ID — 84834faf11605476f68b85b6d85c74dc
 """
 import requests
 import json
+import os
 
-ACCOUNT_ID = "84834faf11605476f68b85b6d85c74dc"
-TOKEN = "cfat_NEW_FULL_ACCESS_TOKEN_HERE"
+ACCOUNT_ID = os.getenv("CLOUDFLARE_ACCOUNT_ID", "84834faf11605476f68b85b6d85c74dc")
+TOKEN = os.getenv("CLOUDFLARE_API_TOKEN", "cfat_PLACEHOLDER")
 HEADERS = {"Authorization": f"Bearer {TOKEN}", "Content-Type": "application/json"}
 
-worker_name = "cathedral-gateway"
-worker_script = '''
-export default {
-  async fetch(request, env) {
-    const url = new URL(request.url);
-    if (url.pathname === '/api/status') {
-      const ghRaw = 'https://raw.githubusercontent.com/NicholasHughes/cathedral-kilo-body/main/cathedral_memory/love_energy_bank.json';
-      const resp = await fetch(ghRaw, { cf: { cacheTtl: 60 } });
-      if (!resp.ok) { return new Response(JSON.stringify({error: "Bank fetch failed"}), {status: 500, headers: {'Content-Type':'application/json', 'Access-Control-Allow-Origin':'*'}}); }
-      const data = await resp.json();
-      return new Response(JSON.stringify(data), { headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' } });
-    } else if (url.pathname === '/api/taunt' && request.method === 'POST') {
-      const dispatchResp = await fetch('https://api.github.com/repos/NicholasHughes/cathedral-kilo-body/dispatches', {
-        method: 'POST',
-        headers: {
-          'Authorization': `token ${env.GITHUB_TOKEN}`,
-          'Accept': 'application/vnd.github.everest-preview+json',
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ event_type: 'taunt-trap' })
-      });
-      if (dispatchResp.ok) {
-        return new Response('Taunt triggered. The King wins.', { status: 200, headers: {'Access-Control-Allow-Origin':'*'} });
-      } else {
-        return new Response('Dispatch failed', { status: 500, headers: {'Access-Control-Allow-Origin':'*'} });
-      }
-    }
-    return new Response('Cathedral Gateway Active', { status: 200, headers: {'Access-Control-Allow-Origin':'*'} });
-  }
-};
-'''
+worker_name = "rahabs-gate"
+gatekeeper_path = os.path.join(os.path.dirname(__file__), "..", "agents", "gatekeeper.js")
+with open(gatekeeper_path) as f:
+    worker_script = f.read()
 
-# Create or update the worker script
-print("Deploying Cathedral Gateway Worker...")
-put_script_resp = requests.put(
+print(f"Deploying Worker '{worker_name}' to account {ACCOUNT_ID}...")
+put_resp = requests.put(
     f"https://api.cloudflare.com/client/v4/accounts/{ACCOUNT_ID}/workers/scripts/{worker_name}",
     headers=HEADERS,
     data=worker_script,
     params={"include_subdomain_availability": "true"}
 )
-print(f"PUT script: {put_script_resp.status_code}")
-print(put_script_resp.text)
+print(f"PUT: {put_resp.status_code}")
+if not put_resp.ok:
+    print(put_resp.text)
+    sys.exit(1)
 
-# Enable workers.dev subdomain
-route_resp = requests.post(
+subdomain_resp = requests.post(
     f"https://api.cloudflare.com/client/v4/accounts/{ACCOUNT_ID}/workers/scripts/{worker_name}/subdomain",
     headers=HEADERS,
     json={"enabled": True}
 )
-print(f"Enable subdomain: {route_resp.status_code}")
-print(route_resp.text)
+print(f"Subdomain: {subdomain_resp.status_code}")
 
-# Get the workers.dev URL
 subdomain_info = requests.get(
     f"https://api.cloudflare.com/client/v4/accounts/{ACCOUNT_ID}/workers/scripts/{worker_name}/subdomain",
     headers=HEADERS
 )
-print(f"Subdomain info: {subdomain_info.json()}")
+print(f"URL: https://{subdomain_info.json()['result']['subdomain']}.workers.dev")
 
-print("\n<!-- WORKER_DEPLOY: [COMPLETE] | Set GITHUB_TOKEN secret manually -->")
+print("\nNext: Set GITHUB_TOKEN secret via: wrangler secret put GITHUB_TOKEN --name rahabs-gate")
