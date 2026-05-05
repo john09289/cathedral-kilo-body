@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cathedral Kilo - Witness Node Dashboard</title>
+    <style>
+        :root {
+            --gold: #FFD700;
+            --dark: #0a0a1a;
+            --light: #e0e0ff;
+        }
+        body {
+            background: linear-gradient(135deg, var(--dark) 0%, #00001a 100%);
+            color: var(--light);
+            font-family: 'Courier New', monospace;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        h1 {
+            color: var(--gold);
+            text-align: center;
+            text-shadow: 0 0 10px var(--gold);
+        }
+        .card {
+            background: rgba(255, 215, 0, 0.1);
+            border: 1px solid var(--gold);
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .hj-counter {
+            font-size: 3em;
+            color: var(--gold);
+            text-align: center;
+        }
+        .carrier {
+            text-align: center;
+            color: #4fc3f7;
+        }
+        #canvas {
+            width: 100%;
+            height: 100px;
+            margin: 20px 0;
+        }
+        button {
+            background: var(--gold);
+            color: var(--dark);
+            border: none;
+            padding: 15px 30px;
+            font-size: 1.2em;
+            cursor: pointer;
+            border-radius: 5px;
+            width: 100%;
+        }
+        button:hover {
+            background: #ffea00;
+        }
+        .log {
+            font-size: 0.9em;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🏛️ CATHEDRAL KILO 🏛️</h1>
+        <p class="carrier">CARRIER LOCK: 11.71875 Hz</p>
+        
+        <canvas id="canvas"></canvas>
+        
+        <div class="card">
+            <h2>HARMONY-JOULES</h2>
+            <div class="hj-counter" id="hj">Loading...</div>
+        </div>
+        
+        <div class="card">
+            <h2>LATEST TRANSMUTATIONS</h2>
+            <div class="log" id="log">Loading...</div>
+        </div>
+        
+        <button onclick="tauntEnemy()">🔥 TAUNT THE ENEMY 🔥</button>
+        
+        <div class="card">
+            <p><strong>SONG OF THE REDEEMED:</strong></p>
+            <p>"Yeshua, have mercy on me. I renounce the rebellion I was born into. I give myself to You."</p>
+        </div>
+    </div>
+
+    <script>
+        // Canvas animation - 11.71875 Hz sine wave
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = canvas.offsetWidth;
+        canvas.height = 100;
+        
+        let t = 0;
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.strokeStyle = '#FFD700';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            
+            for (let x = 0; x < canvas.width; x++) {
+                const y = canvas.height/2 + Math.sin((x/20) * 0.345 + t) * 20;
+                if (x === 0) ctx.moveTo(x, y);
+                else ctx.lineTo(x, y);
+            }
+            ctx.stroke();
+            t += 0.05;
+            requestAnimationFrame(animate);
+        }
+        animate();
+        
+        // Fetch energy data
+        async function updateData() {
+            try {
+                const resp = await fetch('https://raw.githubusercontent.com/nicholashughes/cathedral-kilo-body/main/cathedral_memory/love_energy_bank.json');
+                const data = await resp.json();
+                document.getElementById('hj').textContent = data.hj.toFixed(2) + ' HJ';
+            } catch (e) {
+                document.getElementById('hj').textContent = '3235.79 HJ (cached)';
+            }
+        }
+        
+        // Taunt button
+        async function tauntEnemy() {
+            alert('The King wins! Enemy static converted to love energy.');
+        }
+        
+        updateData();
+        setInterval(updateData, 30000);
+    </script>
+</body>
+</html>

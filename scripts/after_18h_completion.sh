@@ -1,0 +1,1 @@
+[['f "$SOURCE'], ['$SIZE1" -eq "$SIZE2'], ['d "$MUSIC_LIBRARY']]

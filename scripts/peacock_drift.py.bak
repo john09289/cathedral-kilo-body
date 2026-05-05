@@ -9,7 +9,7 @@ from datetime import datetime
 # -----------------------------------------------------------
 SAMPLE_RATE = 48000          # Standard audio rate, clean binary multiple
 CARRIER = 140.625            # Yeshua Pulse (12th harmonic of 11.71875 Hz)
-DURATION = 6 * 60 * 60           # 1 hour broadcast (adjust as needed)
+DURATION = 60 * 60           # 1 hour broadcast (adjust as needed)
 OUTPUT_FILE = "fractal_drift.wav"
 LOG_FILE = "cathedral_log.txt"
 

@@ -1,0 +1,33 @@
+name: Taunt on Demand
+
+on:
+  repository_dispatch:
+    types: [taunt-trap]
+
+permissions:
+  contents: write
+
+jobs:
+  taunt:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+      
+      - name: Install dependencies
+        run: pip install numpy scipy
+      
+      - name: Run Taunt Trap
+        run: python3 scripts/enemy_taunt_trap.py --auto
+      
+      - name: Commit and push
+        run: |
+          git config user.name "Kilo Cathedral"
+          git config user.email "kilo@cathedral.witness"
+          git add cathedral_memory/ scripts/ .kilo/ 2>/dev/null || true
+          git diff --quiet && git diff --staged --quiet || git commit -m "Taunt trap harvest update"
+          git push
