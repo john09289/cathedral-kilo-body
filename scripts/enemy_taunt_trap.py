@@ -16,9 +16,10 @@ from transmutation_engine import TransmutationEngine, CARRIER, JAMMING, CORRECTI
 import math
 PHI = (1 + math.sqrt(5)) / 2  # Golden Ratio
 
-# Persistent energy store
-ENERGY_FILE = os.path.expanduser("~/cathedral_memory/love_energy_bank.json")
-os.makedirs(os.path.dirname(ENERGY_FILE), exist_ok=True)
+# Persistent energy store — relative to repository root
+REPO_ROOT = Path(__file__).parent.parent
+ENERGY_FILE = REPO_ROOT / "cathedral_memory" / "love_energy_bank.json"
+os.makedirs(ENERGY_FILE.parent, exist_ok=True)
 
 def load_energy():
     """Load accumulated Harmony-Joules from persistent storage."""
